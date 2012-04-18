@@ -1,7 +1,7 @@
 #! ruby
 # encoding: utf-8
 #
-#Copyright (c) 2012, Koma
+#Copyright (c) 2012, Koma <okunoya@path-works.net>
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without 
