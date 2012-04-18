@@ -22,9 +22,9 @@ There is currently no configuration required for this program.
 Installation - インストール
 ------------------------------------------------------------------------
 ### Installing the compiled binary - バイナリファイルのインストール ###
-Just place the compHTML.exe file anywhere you would like to install.
+Just place the compHTML.exe and compHTML.css file anywhere you would like to install.
 - - -
-単純にcompHTMLファイルをお好きなフォルダに入れてお使い下さい
+単純にcompHTML.exe と compHTML.css ファイルをお好きなフォルダに入れてお使い下さい
 
 ### Compiling from the source - ソースからコンパイルする場合 ###
 
@@ -74,13 +74,34 @@ this should produce compHTML.exe using the [OCRA][]
 
 Usage - 利用方法
 ------------------------------------------------------------------------
-Using compHTML is as simple as drag-and-drop of markdown files to the executable.  At the moment, there is no settings or command line arguments.  In the future, I will try to implement some configuration to take in css files as well as some parameters for the Renderer.
+
+### Windows exe file - Windows用EXE
+Using compHTML.exe is as simple as drag-and-drop of markdown files to the executable.  
+
+At the moment, there is no settings or command line arguments.  In the future, I will try to implement some configuration to take in css files as well as some parameters for the Renderer.
 
 All the files dropped to compHTML will be parsed as markdown files and will produce an html file of the name original-filename.markdown.html in the same directory as the original file.  If the file already exists, it will __*Overwrite*__ the file.
 - - -
-利用方法は単純です。compHTML.exeにmarkdown方式で記述したテキストファイルをドラッグ・アンド・ドロップしてください。現時点では設定やコマンドラインオプションなどは一切実装されていません。将来的には設定ファイルを利用したCSSファイルの指定等を実装する予定です。
+利用方法は単純です。compHTML.exeにmarkdown方式で記述したテキストファイルをドラッグ・アンド・ドロップしてください。
+
+現時点では設定やコマンドラインオプションなどは一切実装されていません。将来的には設定ファイルを利用したCSSファイルの指定等を実装する予定です。
 
 ドラッグ・アンド・ドロップされたファイルは全てmarkdown方式で記述されたテキストファイルとしてパースされ、compHTML.cssを含んだHTMLファイルを元ファイルと同じ場所に生成します。生成するファイルは元ファイル名に".html"が付け加えられたものとなります。この際、同名のファイルが存在する場合は__*上書き*__されるため、ご注意下さい。
+
+### Run as a ruby script - Rubyスクリプトとして実行する
+You can ofcourse, run the script directly as follows:
+
+1. '`ruby compHTML.rb [File 1] [File 2] ...`'
+2. the above will produce "File 1.html" "File 2.html" ... 
+
+In the above case, you will be required to have [Ruby][] 1.9.x and [Redcarpet][] installed
+- - -
+以下の様に直接スクリプトを実行することも可能です：
+
+1. '`ruby compHTML.rb [File 1] [File 2] ...`'
+2. 上記の様に実行することで "File 1.html" "File 2.html" ... といったようにHTMLファイルが生成されます。
+
+この際は [Ruby][] 1.9.x と [Redcarpet][] がインストールされている必要があります。
 
 Known Bugs - 既知のバグ
 ------------------------------------------------------------------------
@@ -109,7 +130,7 @@ This work uses the following libraries and external works
 
 LICENSE - ライセンス
 ------------------------------------------------------------------------
-Copyright (c) 2012, Koma
+Copyright (c) 2012, Koma <okunoya@path-works.net>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
