@@ -1,7 +1,7 @@
 #! ruby
 # encoding: utf-8
 #
-#Copyright (c) 2012, Yasuhiro Okuno
+#Copyright (c) 2012, Koma
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without 
