@@ -84,8 +84,11 @@ All the files dropped to compHTML will be parsed as markdown files and will prod
 
 Known Bugs - 既知のバグ
 ------------------------------------------------------------------------
-Not at the moment... Please contact the Author for any bugs.
-現在特にありません。バグや機能要望については開発者までご連絡ください。
+
+* Encoding issue
+    * Current output assumes Shift-JIS as the console encoding and will be garbled if used in environments other than Shift-JIS console.
+
+If you find any other bugs or issues, contact the author or use Github project page to file an issue.
 
 Credits - クレジット
 ------------------------------------------------------------------------
