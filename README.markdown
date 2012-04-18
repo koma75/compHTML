@@ -13,20 +13,20 @@ Change History
 | ------: | ---: | :------------- |
 | 1.0 | 2012.04.18 | First Release |
 
-Configuration - �ݒ�
+Configuration - 設定
 ------------------------------------------------------------------------
 There is currently no configuration required for this program.
 - - -
-���݂��̃v���O�����ɂ͐ݒ�͗L��܂���
+現在このプログラムには設定は有りません
 
-Installation - �C���X�g�[��
+Installation - インストール
 ------------------------------------------------------------------------
-### Installing the compiled binary - �o�C�i���t�@�C���̃C���X�g�[�� ###
+### Installing the compiled binary - バイナリファイルのインストール ###
 Just place the compHTML.exe file anywhere you would like to install.
 - - -
-�P����compHTML�t�@�C�������D���ȃt�H���_�ɓ���Ă��g��������
+単純にcompHTMLファイルをお好きなフォルダに入れてお使い下さい
 
-### Compiling from the source - �\�[�X����R���p�C������ꍇ ###
+### Compiling from the source - ソースからコンパイルする場合 ###
 
 You will be required to have the following installed
 
@@ -42,6 +42,7 @@ You will be required to have the following installed
     * [Rake][]
 
 Do the Following to compile:
+
 1. place all the files inside a folder
 2. do '`cd /path/to/your/compHTML`' in your command line prompt
 3. run '`rake`'
@@ -50,42 +51,43 @@ or just run the dorake.bat file...
 
 this should produce compHTML.exe using the [OCRA][]
 - - -
-���̃v���O�������R���p�C�����ė��p���邽�߂ɂ͈ȉ��̕����K�v�ɂȂ�܂�
+このプログラムをコンパイルして利用するためには以下の物が必要になります
 
 * Windows
-    * ���݃R���p�C����OCRA�𗘗p���Ă��邽��Windows�݂̂ƂȂ��Ă��܂��B
-      ���̃v���b�g�t�H�[���ŗ��p����ꍇ�͂��̂܂�Ruby�Ŏ��s���Ă���������
-      ���ꂼ��̃p�b�P�[�W�V�X�e���Ńp�b�P�[�W���Ă��������B
-* Ruby 1.9.x �ȍ~
-    * 1.9.3�ł̂݃e�X�g�ς݁B1.8.x�ł�������������܂���B
-* �ȉ���Gems
+    * 現在コンパイルはOCRAを利用しているためWindowsのみとなっています。
+      他のプラットフォームで利用する場合はそのままRubyで実行していただくか
+      それぞれのパッケージシステムでパッケージしてください。
+* Ruby 1.9.x 以降
+    * 1.9.3でのみテスト済み。1.8.xでも動くかもしれません。
+* 以下のGems
     * [Redcarpet][]
     * [OCRA][]
     * [Rake][]
 
-�ȉ������s���ăR���p�C�����Ă�������:
-1. �t�@�C����S�Ĉ�̃t�H���_�ɓ���ĉ�����
-2. '`cd /path/to/your/compHTML`' �̂悤�ɃR�}���h�v�����v�g�ŏ�L�̃t�H���_�Ɉړ����Ă��������B
-3. '`rake`' �����s���邱�ƂŃR���p�C������܂��B
+以下を実行してコンパイルしてください:
 
-��L�� compHTML.exe �����������͂��ł��B
+1. ファイルを全て一つのフォルダに入れて下さい
+2. '`cd /path/to/your/compHTML`' のようにコマンドプロンプトで上記のフォルダに移動してください。
+3. '`rake`' を実行することでコンパイルされます。
 
-Usage - ���p���@
+上記で compHTML.exe が生成されるはずです。
+
+Usage - 利用方法
 ------------------------------------------------------------------------
 Using compHTML is as simple as drag-and-drop of markdown files to the executable.  At the moment, there is no settings or command line arguments.  In the future, I will try to implement some configuration to take in css files as well as some parameters for the Renderer.
 
 All the files dropped to compHTML will be parsed as markdown files and will produce an html file of the name original-filename.markdown.html in the same directory as the original file.  If the file already exists, it will __*Overwrite*__ the file.
 - - -
-���p���@�͒P���ł��BcompHTML.exe��markdown�����ŋL�q�����e�L�X�g�t�@�C�����h���b�O�E�A���h�E�h���b�v���Ă��������B�����_�ł͐ݒ��R�}���h���C���I�v�V�����Ȃǂ͈�؎�������Ă��܂���B�����I�ɂ͐ݒ�t�@�C���𗘗p����CSS�t�@�C���̎w�蓙����������\��ł��B
+利用方法は単純です。compHTML.exeにmarkdown方式で記述したテキストファイルをドラッグ・アンド・ドロップしてください。現時点では設定やコマンドラインオプションなどは一切実装されていません。将来的には設定ファイルを利用したCSSファイルの指定等を実装する予定です。
 
-�h���b�O�E�A���h�E�h���b�v���ꂽ�t�@�C���͑S��markdown�����ŋL�q���ꂽ�e�L�X�g�t�@�C���Ƃ��ăp�[�X����AcompHTML.css���܂�HTML�t�@�C�������t�@�C���Ɠ����ꏊ�ɐ������܂��B��������t�@�C���͌��t�@�C������".html"���t��������ꂽ���̂ƂȂ�܂��B���̍ہA�����̃t�@�C�������݂���ꍇ��__*�㏑��*__����邽�߁A�����Ӊ������B
+ドラッグ・アンド・ドロップされたファイルは全てmarkdown方式で記述されたテキストファイルとしてパースされ、compHTML.cssを含んだHTMLファイルを元ファイルと同じ場所に生成します。生成するファイルは元ファイル名に".html"が付け加えられたものとなります。この際、同名のファイルが存在する場合は__*上書き*__されるため、ご注意下さい。
 
-Known Bugs - ���m�̃o�O
+Known Bugs - 既知のバグ
 ------------------------------------------------------------------------
 Not at the moment... Please contact the Author for any bugs.
-���ݓ��ɂ���܂���B�o�O��@�\�v�]�ɂ��Ă͊J���҂܂ł��A�����������B
+現在特にありません。バグや機能要望については開発者までご連絡ください。
 
-Credits - �N���W�b�g
+Credits - クレジット
 ------------------------------------------------------------------------
 This work uses the following libraries and external works
 
@@ -102,7 +104,7 @@ This work uses the following libraries and external works
 [Rake]:         http://rake.rubyforge.org/ "Rake - Ruby Make"
 [Ruby]:         http://www.ruby-lang.org/ "Ruby - A Programmer's Best Friend"
 
-LICENSE - ���C�Z���X
+LICENSE - ライセンス
 ------------------------------------------------------------------------
 Copyright (c) 2012, Koma
 All rights reserved.
