@@ -24,7 +24,9 @@ Installation - インストール
 ### Installing the compiled binary - バイナリファイルのインストール ###
 1. Download the zip file from [Downloads](https://github.com/koma75/compHTML/downloads) section and extract the files.
 2. place the extracted compHTML.exe and compHTML.css file anywhere you would like to install (keep them in the same folder).
+
 - - -
+
 1. [ダウンロード](https://github.com/koma75/compHTML/downloads)セクションからzipファイルをダウンロードして解凍してください。
 2. 解凍されたcompHTML.exe と compHTML.css ファイルをお好きなフォルダに入れてお使い下さい
 
