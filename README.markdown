@@ -22,12 +22,12 @@ There is currently no configuration required for this program.
 Installation - インストール
 ------------------------------------------------------------------------
 ### Installing the compiled binary - バイナリファイルのインストール ###
-1. Download the zip file from [Downloads](https://github.com/koma75/compHTML/downloads) section and extract the files.
+1. Download the [zip file](https://github.com/downloads/koma75/compHTML/compHTML.zip) from [Downloads](https://github.com/koma75/compHTML/downloads) section and extract the files.
 2. place the extracted compHTML.exe and compHTML.css file anywhere you would like to install (keep them in the same folder).
 
 - - -
 
-1. [ダウンロード](https://github.com/koma75/compHTML/downloads)セクションからzipファイルをダウンロードして解凍してください。
+1. [ダウンロード](https://github.com/koma75/compHTML/downloads)セクションから[zipファイル](https://github.com/downloads/koma75/compHTML/compHTML.zip)をダウンロードして解凍してください。
 2. 解凍されたcompHTML.exe と compHTML.css ファイルをお好きなフォルダに入れてお使い下さい
 
 ### Compiling from the source - ソースからコンパイルする場合 ###
