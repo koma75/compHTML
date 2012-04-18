@@ -115,6 +115,18 @@ In the above case, you will be required to have [Ruby][] 1.9.x and [Redcarpet][]
 
 この際は [Ruby][] 1.9.x と [Redcarpet][] がインストールされている必要があります。
 
+### Markdown syntax - 元ファイルの記法(Markdown)について ###
+A Full syntax can be found [here](http://daringfireball.net/projects/markdown/syntax.php).  The [Wikipedia page](http://en.wikipedia.org/wiki/Markdown) has a brief explanation of the syntax as well.
+
+In addition to the original Markdown syntax, phpMarkdown style tables are enabled on compHTML.  You can see the syntax in the sample.txt file.
+- - -
+記述ルールはMarkdownの記法が利用できます。
+
+Markdownの記法についての概要は[Wikipedia の記事](http://ja.wikipedia.org/wiki/Markdown)にあるものがおおよその参考になりますのでそちらを参照してください。
+記法の詳細は[オリジナルの文法説明ページ](http://daringfireball.net/projects/markdown/syntax.php)の[日本語訳ページ](http://blog.2310.net/archives/6)が参考になります。
+
+さらに追加で、phpMarkdown 方式のテーブル記述対応をcompHTMLでは有効にしています。テーブルの記述方法についてはサンプル（Sample.txt）等をご覧下さい。
+
 Known Bugs - 既知のバグ
 ------------------------------------------------------------------------
 
