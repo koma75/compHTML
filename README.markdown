@@ -22,9 +22,11 @@ There is currently no configuration required for this program.
 Installation - インストール
 ------------------------------------------------------------------------
 ### Installing the compiled binary - バイナリファイルのインストール ###
-Just place the compHTML.exe and compHTML.css file anywhere you would like to install.
+1. Download the zip file from [Downloads](https://github.com/koma75/compHTML/downloads) section and extract the files.
+2. place the extracted compHTML.exe and compHTML.css file anywhere you would like to install (keep them in the same folder).
 - - -
-単純にcompHTML.exe と compHTML.css ファイルをお好きなフォルダに入れてお使い下さい
+1. [ダウンロード](https://github.com/koma75/compHTML/downloads)セクションからzipファイルをダウンロードして解凍してください。
+2. 解凍されたcompHTML.exe と compHTML.css ファイルをお好きなフォルダに入れてお使い下さい
 
 ### Compiling from the source - ソースからコンパイルする場合 ###
 
@@ -78,11 +80,19 @@ Usage - 利用方法
 ### Windows exe file - Windows用EXE
 Using compHTML.exe is as simple as drag-and-drop of markdown files to the executable.  
 
+1. Drag-and-drop a markdown formatted text file
+2. An HTML compiled version will be saved on the same folder as the input file.
+    * A [Sample.txt](https://github.com/koma75/compHTML/blob/master/sample.txt) will produce something like [this](http://cloud.github.com/downloads/koma75/compHTML/sample.txt.html)
+
 At the moment, there is no settings or command line arguments.  In the future, I will try to implement some configuration to take in css files as well as some parameters for the Renderer.
 
 All the files dropped to compHTML will be parsed as markdown files and will produce an html file of the name original-filename.markdown.html in the same directory as the original file.  If the file already exists, it will __*Overwrite*__ the file.
 - - -
-利用方法は単純です。compHTML.exeにmarkdown方式で記述したテキストファイルをドラッグ・アンド・ドロップしてください。
+利用方法は単純です。
+
+1. compHTML.exeにmarkdown方式で記述したテキストファイルをドラッグ・アンド・ドロップしてください。
+2. 入力したファイルがHTMLに変換されて同じフォルダに出力されます
+    * サンプル入力 [Sample.txt](https://github.com/koma75/compHTML/blob/master/sample.txt) を入力した場合[こんな感じ](http://cloud.github.com/downloads/koma75/compHTML/sample.txt.html)のHTMLが出力されます。
 
 現時点では設定やコマンドラインオプションなどは一切実装されていません。将来的には設定ファイルを利用したCSSファイルの指定等を実装する予定です。
 
