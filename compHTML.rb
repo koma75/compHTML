@@ -69,7 +69,7 @@ module CompHTML
       ####################################################################
       # Initialization of Redcarpet
       # TODO: move all the relevant options to config
-      @rndr = Redcarpet::Render::HTML.new(:hard_wrap => true,
+      @rndr = Redcarpet::Render::HTML.new(:hard_wrap => false,
                                          :xhtml => true,
                                          :with_toc_data => true)
       @markdown = Redcarpet::Markdown.new(@rndr, 
