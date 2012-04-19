@@ -130,6 +130,7 @@ Markdownの記法についての概要は[Wikipedia の記事](http://ja.wikiped
 Known Bugs - 既知のバグ
 ------------------------------------------------------------------------
 
+* compHTML.css path is not specified relative to the executive file when compiled.
 * Encoding issue
     * Current output assumes Shift-JIS as the console encoding and will be garbled if used in environments other than Shift-JIS console.
 
