@@ -34,6 +34,7 @@
 #  * https://github.com/clownfart/Markdown-CSS
 
 require 'redcarpet'
+require 'logger'
 require 'kconv'
 
 module CompHTML
@@ -42,30 +43,62 @@ module CompHTML
     DefaultCssFile = "compHTML.css"
 
     # Default CSS File Reader function
-    def self.defaultCSS
+    def self.DefaultCssFile
       return DefaultCssFile
     end
 
     # Initialization of Config class
     # Reads the specified iniFile and populate the configuration 
     # parameters
-    def initialize(iniFile = "config.ini")
-      if iniFile.length > 0 and File.exists?(iniFile)
+    # MAY BREAK if executed after changing the working directory
+    def initialize(log = nil, iniFile = "config.ini")
+      @log = log || Logger.new(STDERR)
+      # Set Directory path settings
+      if is_OcraCompiled() # needs to obtain exePath from env
+        @exePath = File.dirname(ENV["OCRA_EXECUTABLE"])
+        log.debug "running as ocra executive"
+      else
+        @exePath = File.dirname(File.expand_path($0))
+        log.debug "running as ruby script"
+      end
+      log.debug "@exePath = #{@exePath}"
+
+      # Expand the path if iniFile specified with a relative path
+      if File.dirname(iniFile)[0] == "."  # is a relative path
+        iniFile = File.expand_path(iniFile, @exePath)
+      end
+      log.debug "using config file path :#{iniFile}"
+
+      # if iniFile was a 0 length string, it should be expanded
+      # at this point as the @exeFile
+      if File.file?(iniFile) and File.exists?(iniFile)
         # TODO: properly parse ini file and populate settings
         # No current support, so just use default values
-        @cssFile = DefaultCssFile
+        @cssFile = File.expand_path(DefaultCssFile, @exePath)
       else
-        @cssFile = DefaultCssFile
+        @cssFile = File.expand_path(DefaultCssFile, @exePath)
+      end
+      log.debug "@cssFile :#{@cssFile}"
+    end # initialize
+    attr_reader :log
+    attr_accessor :cssFile, :exePath
+
+    def is_OcraCompiled()
+      if ENV["OCRA_EXECUTABLE"].nil?
+        return false
+      else
+        return true
       end
     end
-    attr_accessor :cssFile
-  end
+    private :is_OcraCompiled
+  end # Config Class
 
   # Markdown Engine used to compile markdown text inputs
   class Engine
     # Initialization for the Markdown Engine
     # css_filename : css file to use to create the CSS portion of the HTML
-    def initialize(config)
+    def initialize(log = nil, config)
+      @log = log || Logger.new(STDERR)
       ####################################################################
       # Initialization of Redcarpet
       # TODO: move all the relevant options to config
@@ -83,6 +116,7 @@ module CompHTML
 
       self.setCSS_to(config.cssFile)
     end
+    attr_reader :log
 
     # reset the css to specified css
     def setCSS_to(css_filename = "")
@@ -106,6 +140,7 @@ module CompHTML
          
           <body>
       EOS
+      log.debug "HTML Title set to : #{Kconv.tosjis(title)}"
       return htmlHeader
     end
     private :createHTMLhead
@@ -134,6 +169,7 @@ module CompHTML
         -->
         </style>
       EOS
+      log.debug "CSS input file : #{inFile}"
       return cssOut
     end
     private :createCSSinsert
@@ -145,6 +181,7 @@ module CompHTML
     #   the body of the HTML file
     def generateHtml(outFile = "", title = "Markdown HTML", markdownTXT = "")
       # Write the final output
+      log.debug "generating HTML for :#{outFile}"
       if outFile == nil or outFile.length == 0
         puts "ERROR: output filename invalid"
         return
@@ -153,8 +190,6 @@ module CompHTML
         puts "ERROR: no markdown text specified"
         return
       end
-      puts "outputting HTML: " + outFile
-      puts "Title: " + Kconv.tosjis(title)
 
       # we want to replace the old html file
       # TODO: this might be better off being an option
@@ -177,7 +212,10 @@ module CompHTML
   class Reader
     # Initialize Reader class with the inputFile.
     # Reads the inputFile and populate the instance variables for later use
-    def initialize(inputFile = "")
+    def initialize(log = nil, inputFile = "")
+      @log = log || Logger.new(STDERR)
+
+      log.debug "Reading : #{inputFile}"
       # Read the input file and obtain first line for HTML Title
       @fileTitle = ""
       @fileBody = ""
@@ -199,9 +237,9 @@ module CompHTML
         raise "ERROR: Input file '#{Kconv.tosjis(inputFile)}' does not exist!"
       end
     end
-
+    attr_reader :log
     attr_accessor :fileTitle, :fileBody, :outputName
-  end  # FileReader Class
+  end  # Reader Class
 end
 
 # Program Constants
@@ -212,13 +250,16 @@ No Input file to parse
 Usage: #{ProgramName} [File] [File ...]
     Parses each input [File] as markdown text and outputs an HTML file
     including the CSS file specified in the settings
-    (settings are currently unsupported and defaults to #{CompHTML::Config.defaultCSS})
+    (settings are currently unsupported and defaults to #{CompHTML::Config.DefaultCssFile})
 EOS
 
 if $0 == __FILE__
+  # Create the logging object
+  log = Logger.new(STDERR)
+  log.level = Logger::DEBUG
   # Parse input arguments.
   files = []
-  myConfig = CompHTML::Config.new()
+  myConfig = CompHTML::Config.new(log)
   if (ARGV.length > 0)
     ARGV.each do |x|
       files.push(x)
@@ -243,7 +284,7 @@ if $0 == __FILE__
   # Run each input file through the Engine
   files.each do |filename|
     begin
-      myReader = CompHTML::Reader.new(filename)
+      myReader = CompHTML::Reader.new(log, filename)
       myEngine.generateHtml(myReader.outputName, myReader.fileTitle, myReader.fileBody)
     rescue => ex
       puts ex
