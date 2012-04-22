@@ -4,13 +4,14 @@ compHTML - a Markdown file to HTML compiler v1.0
 |||
 |:--------- | :---------------------------- |
 |Author     | Koma <okunoya@path-works.net> |
-|Version    | 1.0                           |
+|Version    | 1.0.1                         |
 |License    | BSD 2-clause license          |
 
 Change History
 ------------------------------------------------------------------------
 | Version | Date | Change History |
 | ------: | ---: | :------------- |
+| 1.0.1   | 2012.04.22 | Fixed path bug |
 | 1.0 | 2012.04.18 | First Release |
 
 Configuration - 設定
@@ -130,7 +131,6 @@ Markdownの記法についての概要は[Wikipedia の記事](http://ja.wikiped
 Known Bugs - 既知のバグ
 ------------------------------------------------------------------------
 
-* compHTML.css path is not specified relative to the executive file when compiled.
 * Encoding issue
     * Current output assumes Shift-JIS as the console encoding and will be garbled if used in environments other than Shift-JIS console.
 
