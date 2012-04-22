@@ -256,7 +256,7 @@ EOS
 if $0 == __FILE__
   # Create the logging object
   log = Logger.new(STDERR)
-  log.level = Logger::DEBUG
+  log.level = Logger::ERROR
   # Parse input arguments.
   files = []
   myConfig = CompHTML::Config.new(log)
@@ -287,7 +287,7 @@ if $0 == __FILE__
       myReader = CompHTML::Reader.new(log, filename)
       myEngine.generateHtml(myReader.outputName, myReader.fileTitle, myReader.fileBody)
     rescue => ex
-      puts ex
+      log.error ex
     end
   end
 
