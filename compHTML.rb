@@ -279,7 +279,7 @@ if $0 == __FILE__
   end
 
   # Initialize the CompHTML::Engine first
-  myEngine = CompHTML::Engine.new(myConfig)
+  myEngine = CompHTML::Engine.new(log, myConfig)
 
   # Run each input file through the Engine
   files.each do |filename|
