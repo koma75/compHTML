@@ -41,7 +41,7 @@ LOGFILE_NAME = 'compHTML.log'
 if $0 == __FILE__
   # Create the logging object
   log = Logger.new(LOGFILE_NAME)
-  log.level = Logger::DEBUG
+  log.level = Logger::ERROR
 
   # Create the default config class
   myConfig = CompHTML::Config.new(:log=>log)
