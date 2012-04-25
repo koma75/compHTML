@@ -32,16 +32,22 @@
 #  * https://github.com/tanoku/redcarpet
 #* clownfart Markdown-CSS
 #  * https://github.com/clownfart/Markdown-CSS
-$:.unshift File.expand_path(File.dirname(__FILE__))
-require 'compHTML.rb'
+
+require 'logger'
+require File.join(File.expand_path(File.dirname(__FILE__)), 'compHTML_module.rb')
+
+LOGFILE_NAME = 'compHTML.log'
 
 if $0 == __FILE__
   # Create the logging object
-  log = Logger.new("compHTML.log")
-  log.level = Logger::ERROR
+  log = Logger.new(LOGFILE_NAME)
+  log.level = Logger::DEBUG
+
+  # Create the default config class
+  myConfig = CompHTML::Config.new(:log=>log)
+
   # Parse input arguments.
   files = []
-  myConfig = CompHTML::Config.new(log)
   if (ARGV.length > 0)
     ARGV.each do |x|
       files.push(x)
@@ -55,18 +61,20 @@ if $0 == __FILE__
     #   This way we can just drag-n-drop all the files *with*
     #   the CSS file.
   else
-    # no input file so exit
-    exit -1
+    # TODO: Should go into GUI mode here
+    exit 0
   end
 
   # Initialize the CompHTML::Engine first
-  myEngine = CompHTML::Engine.new(log, myConfig)
+  myEngine = CompHTML::Engine.new(:log=>log, :config=>myConfig)
 
   # Run each input file through the Engine
   files.each do |filename|
     begin
-      myReader = CompHTML::Reader.new(log, filename)
-      myEngine.generateHtml(myReader.outputName, myReader.fileTitle, myReader.fileBody)
+      myReader = CompHTML::Reader.new(:log=>log, :inFile=>filename)
+      myEngine.generateHtml(:outFile=>myReader.outputName,
+                            :title=>myReader.fileTitle,
+                            :markdownTXT=>myReader.fileBody)
     rescue => ex
       log.error ex
     end

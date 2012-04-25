@@ -1,5 +1,5 @@
-file 'compHTML.exe' => ["compHTML.rb"] do
-  sh "ocra compHTML.rb"
+file 'compHTML.exe' => ["compHTML.rbw"] do
+  sh "ocra compHTML.rbw"
 end
 
 task :default => ["compHTML.exe"]

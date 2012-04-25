@@ -48,11 +48,17 @@ module CompHTML
     end
 
     # Initialization of Config class
-    # Reads the specified iniFile and populate the configuration 
+    # Reads the specified :iniFile and populate the configuration 
     # parameters
     # MAY BREAK if executed after changing the working directory
-    def initialize(log = nil, iniFile = "config.ini")
-      @log = log || Logger.new(STDERR)
+    def initialize(opts={})
+      opts = {
+        :iniFile=>"config.ini", 
+        :log=>nil
+      }.merge(opts)
+      @log = opts[:log] || Logger.new(STDERR)
+
+      iniFile = opts[:iniFile]
       # Set Directory path settings
       if is_OcraCompiled() # needs to obtain exePath from env
         @exePath = File.dirname(ENV["OCRA_EXECUTABLE"])
@@ -65,24 +71,48 @@ module CompHTML
 
       # Expand the path if iniFile specified with a relative path
       if File.dirname(iniFile)[0] == "."  # is a relative path
+        # assume path is relative to exe path
         iniFile = File.expand_path(iniFile, @exePath)
       end
       log.debug "using config file path :#{iniFile}"
 
+      # Set default values.
+      @rndrOpt = {:hard_wrap => false,
+                  :xhtml => true,
+                  :with_toc_data => true}
+      @markdownExt = {:autolink => true, 
+                      :tables => true,
+                      :fenced_code_blocks => true,
+                      :autolink => true,
+                      :superscript => true,
+                      :strikethrough => true,
+                      :no_intra_emphasis => true}
+
       # if iniFile was a 0 length string, it should be expanded
-      # at this point as the @exeFile
+      # at this point with the @exePath
       if File.file?(iniFile) and File.exists?(iniFile)
         # TODO: properly parse ini file and populate settings
         # No current support, so just use default values
         @cssFile = File.expand_path(DefaultCssFile, @exePath)
+
+        # For hash options, we should do something like the following
+        # rndrIni = Hash.new
+        # extIni = Hash.new
+        # rndrIni.store(:someopt, true) #while parsing ini file
+        #
+        # and merge with default values(which will override the old
+        # with new ones)
+        # @rndrOpt.merge! rndrIni
+        # @markdownExt.merge! extIni
       else
         @cssFile = File.expand_path(DefaultCssFile, @exePath)
       end
       log.debug "@cssFile :#{@cssFile}"
     end # initialize
     attr_reader :log
-    attr_accessor :cssFile, :exePath
+    attr_accessor :cssFile, :exePath, :rndrOpt, :markdownExt
 
+    # Checks if executive is compiled using ocra
     def is_OcraCompiled()
       if ENV["OCRA_EXECUTABLE"].nil?
         return false
@@ -96,23 +126,19 @@ module CompHTML
   # Markdown Engine used to compile markdown text inputs
   class Engine
     # Initialization for the Markdown Engine
-    # css_filename : css file to use to create the CSS portion of the HTML
-    def initialize(log = nil, config)
-      @log = log || Logger.new(STDERR)
+    # :config used to configure the Engine
+    def initialize(opts={})
+      opts = {
+        :log=>nil, 
+        :config=>nil
+      }.merge(opts)
+      @log = opts[:log] || Logger.new(STDERR)
+      config = opts[:config] || CompHTML::Config.new(:log=>@log)
+ 
       ####################################################################
       # Initialization of Redcarpet
-      # TODO: move all the relevant options to config
-      @rndr = Redcarpet::Render::HTML.new(:hard_wrap => false,
-                                         :xhtml => true,
-                                         :with_toc_data => true)
-      @markdown = Redcarpet::Markdown.new(@rndr, 
-                                         :autolink => true, 
-                                         :tables => true,
-                                         :fenced_code_blocks => true,
-                                         :autolink => true,
-                                         :superscript => true,
-                                         :strikethrough => true,
-                                         :no_intra_emphasis => true)
+      @rndr = Redcarpet::Render::HTML.new(config.rndrOpt)
+      @markdown = Redcarpet::Markdown.new(@rndr,config.markdownExt)
 
       self.setCSS_to(config.cssFile)
     end
@@ -127,8 +153,12 @@ module CompHTML
       end
     end
 
-    # Create HTML header with html:title attribute set to title
-    def createHTMLhead(title = "Markdown HTML")
+    # Create HTML header with html:title attribute set to :title
+    def createHTMLhead(opts={})
+      opts = {
+        :title=>"Markdown HTML"
+      }.merge(opts)
+      title = opts[:title]
       htmlHeader = <<-EOS
         <!DOCTYPE html>
 
@@ -156,8 +186,8 @@ module CompHTML
     private :createHTMLfoot
 
     # Create CSS insert
-    # this method will return a zero length string if no input is specified
-    def createCSSinsert(inFile = "")
+    # Assumes that inFile is available.
+    def createCSSinsert(inFile)
       cssOut = ""
       fiCSS = File.open(inFile)
       cssOut = <<-EOS
@@ -175,11 +205,20 @@ module CompHTML
     private :createCSSinsert
 
     # Generates the HTML output with the specified inputs
-    # outFile : Output HTML file name
-    # title : Title used within the HTML title attribute
-    # markdownTXT : string of markdown formatted text to parse and create 
+    # :outFile : Output HTML file name
+    # :title : Title used within the HTML title attribute
+    # :markdownTXT : string of markdown formatted text to parse and create 
     #   the body of the HTML file
-    def generateHtml(outFile = "", title = "Markdown HTML", markdownTXT = "")
+    def generateHtml(opts={})
+      opts = {
+        :outFile=>"", 
+        :title=>"Markdown HTML", 
+        :markdownTXT=>""
+      }.merge(opts)
+      outFile = opts[:outFile]
+      title = opts[:title]
+      markdownTXT = opts[:markdownTXT]
+
       # Write the final output
       log.debug "generating HTML for :#{outFile}"
       if outFile == nil or outFile.length == 0
@@ -199,7 +238,7 @@ module CompHTML
       foHtml = open(outFile,'a')
 
       # Finally generate the html output
-      foHtml.puts createHTMLhead(title)
+      foHtml.puts createHTMLhead(:title=>title)
       foHtml.puts @css
       foHtml.puts @markdown.render(markdownTXT)
       foHtml.puts createHTMLfoot()
@@ -211,9 +250,15 @@ module CompHTML
   # File Reader to prepare for the CompHTML::Engine use
   class Reader
     # Initialize Reader class with the inputFile.
-    # Reads the inputFile and populate the instance variables for later use
-    def initialize(log = nil, inputFile = "")
-      @log = log || Logger.new(STDERR)
+    # Reads the :inFile and populate the instance variables for later use
+    def initialize(opts={})
+      opts = {
+        :inFile=>"", 
+        :log=>nil
+      }.merge(opts)
+      @log = opts[:log] || Logger.new(STDERR)
+
+      inputFile = opts[:inFile]
 
       log.debug "Reading : #{inputFile}"
       # Read the input file and obtain first line for HTML Title
@@ -240,56 +285,5 @@ module CompHTML
     attr_reader :log
     attr_accessor :fileTitle, :fileBody, :outputName
   end  # Reader Class
-end
-
-# Program Constants
-ProgramName = "compHTML"
-Usage = <<-EOS
-No Input file to parse
-
-Usage: #{ProgramName} [File] [File ...]
-    Parses each input [File] as markdown text and outputs an HTML file
-    including the CSS file specified in the settings
-    (settings are currently unsupported and defaults to #{CompHTML::Config.DefaultCssFile})
-EOS
-
-if $0 == __FILE__
-  # Create the logging object
-  log = Logger.new(STDERR)
-  log.level = Logger::ERROR
-  # Parse input arguments.
-  files = []
-  myConfig = CompHTML::Config.new(log)
-  if (ARGV.length > 0)
-    ARGV.each do |x|
-      files.push(x)
-    end
-
-    # TODO: Add an option to specify ini file. may not be very important
-
-    # TODO: Add an option to directly specify CSS File to use
-    #   may be useful to parse the file names for *.css and 
-    #   override instead of using command line options.
-    #   This way we can just drag-n-drop all the files *with*
-    #   the CSS file.
-  else
-    # no input file so exit
-    puts Usage
-    exit -1
-  end
-
-  # Initialize the CompHTML::Engine first
-  myEngine = CompHTML::Engine.new(log, myConfig)
-
-  # Run each input file through the Engine
-  files.each do |filename|
-    begin
-      myReader = CompHTML::Reader.new(log, filename)
-      myEngine.generateHtml(myReader.outputName, myReader.fileTitle, myReader.fileBody)
-    rescue => ex
-      log.error ex
-    end
-  end
-
 end
 
