@@ -4,13 +4,14 @@ compHTML - a Markdown file to HTML compiler
 |||
 |:--------- | :---------------------------- |
 |Author     | Koma <okunoya@path-works.net> |
-|Version    | 1.0.1                         |
+|Version    | 1.1.0                         |
 |License    | BSD 2-clause license          |
 
 Change History
 ------------------------------------------------------------------------
 | Version | Date | Change History |
 | ------: | ---: | :------------- |
+| 1.1     | 2012.04.27 | Added Configuration Feature |
 | 1.0.1   | 2012.04.22 | Fixed path bug |
 | 1.0 | 2012.04.18 | First Release |
 
