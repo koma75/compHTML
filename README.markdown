@@ -1,4 +1,4 @@
-compHTML - a Markdown file to HTML compiler v1.0
+compHTML - a Markdown file to HTML compiler
 ========================================================================
 
 |||
@@ -45,6 +45,8 @@ You will be required to have the following installed
     * [Redcarpet][]
     * [OCRA][]
     * [Rake][]
+    * [IniFile][]
+    * [boolean][]
 
 Do the Following to compile:
 
@@ -68,6 +70,8 @@ this should produce compHTML.exe using the [OCRA][]
     * [Redcarpet][]
     * [OCRA][]
     * [Rake][]
+    * [IniFile][]
+    * [boolean][]
 
 以下を実行してコンパイルしてください:
 
@@ -145,12 +149,18 @@ This work uses the following libraries and external works
     * the default compHTML.css is a derivative works of Markdown-CSS
 * [OCRA][]
     * Used for compiling standalone executive
+* [IniFile][]
+    * Used for configuration file parsing and saving
+* [boolean][]
+    * Used for configuration file parsing
 * [Ruby][] 1.9
 
 [Redcarpet]:    https://github.com/tanoku/redcarpet         "Redcarpet"
 [Markdown-CSS]: https://github.com/clownfart/Markdown-CSS   "Markdown-CSS"
 [OCRA]:         http://ocra.rubyforge.org/  "One-Click Ruby Application"
 [Rake]:         http://rake.rubyforge.org/ "Rake - Ruby Make"
+[IniFile]:      http://rubygems.org/gems/inifile "native Ruby package for reading and writing INI files"
+[boolean]:      http://rubygems.org/gems/boolean "Additional Boolean-related core extensions"
 [Ruby]:         http://www.ruby-lang.org/ "Ruby - A Programmer's Best Friend"
 
 LICENSE - ライセンス
