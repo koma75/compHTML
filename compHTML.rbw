@@ -40,8 +40,10 @@ LOGFILE_NAME = 'compHTML.log'
 
 if $0 == __FILE__
   # Create the logging object
-  log = Logger.new(LOGFILE_NAME)
-  log.level = Logger::ERROR
+  exePath = CompHTML::Config.getExePath() # needs to obtain exePath from env
+
+  log = Logger.new(File.expand_path(LOGFILE_NAME, exePath))
+  log.level = Logger::INFO
 
   # Create the default config class
   myConfig = CompHTML::Config.new(:log=>log)
@@ -60,8 +62,11 @@ if $0 == __FILE__
     #   override instead of using command line options.
     #   This way we can just drag-n-drop all the files *with*
     #   the CSS file.
-  else
-    # TODO: Should go into GUI mode here
+  end
+
+  if files.size == 0
+    # No files to parse
+    # Should go into GUI mode in v2.x
     exit 0
   end
 

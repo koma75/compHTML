@@ -33,20 +33,29 @@
 #* clownfart Markdown-CSS
 #  * https://github.com/clownfart/Markdown-CSS
 
-require 'redcarpet'
 require 'logger'
 require 'kconv'
+# GEMS
+require 'redcarpet'
+require 'boolean'
+require 'inifile'
 
+# @author Koma
 module CompHTML
   # The Configuration class
   class Config
     DefaultCssFile = "compHTML.css"
+    @@exePath = nil
 
     # Default CSS File Reader function
     def self.DefaultCssFile
       return DefaultCssFile
     end
 
+    # @param [Hash] opts
+    # @option opts [String] :iniFile('config.ini') Configuration file
+    # @option opts [Logger] :log(nil) Logger used for logging. creates own
+    #   logger with output to STDERR if nil.
     # Initialization of Config class
     # Reads the specified :iniFile and populate the configuration 
     # parameters
@@ -57,16 +66,15 @@ module CompHTML
         :log=>nil
       }.merge(opts)
       @log = opts[:log] || Logger.new(STDERR)
-
       iniFile = opts[:iniFile]
-      # Set Directory path settings
-      if is_OcraCompiled() # needs to obtain exePath from env
-        @exePath = File.dirname(ENV["OCRA_EXECUTABLE"])
-        log.debug "running as ocra executive"
-      else
-        @exePath = File.dirname(File.expand_path($0))
-        log.debug "running as ruby script"
+
+      # just in case iniFile is an empty string...
+      if iniFile.empty? 
+        raise "Config object initialized with zero length file name!"
       end
+
+      # Set Directory path settings
+      @exePath = CompHTML::Config.getExePath()
       log.debug "@exePath = #{@exePath}"
 
       # Expand the path if iniFile specified with a relative path
@@ -76,55 +84,146 @@ module CompHTML
       end
       log.debug "using config file path :#{iniFile}"
 
-      # Set default values.
-      @rndrOpt = {:hard_wrap => false,
-                  :xhtml => true,
-                  :with_toc_data => true}
-      @markdownExt = {:autolink => true, 
-                      :tables => true,
-                      :fenced_code_blocks => true,
-                      :autolink => true,
-                      :superscript => true,
-                      :strikethrough => true,
-                      :no_intra_emphasis => true}
-
-      # if iniFile was a 0 length string, it should be expanded
-      # at this point with the @exePath
-      if File.file?(iniFile) and File.exists?(iniFile)
-        # TODO: properly parse ini file and populate settings
-        # No current support, so just use default values
-        @cssFile = File.expand_path(DefaultCssFile, @exePath)
-
-        # For hash options, we should do something like the following
-        # rndrIni = Hash.new
-        # extIni = Hash.new
-        # rndrIni.store(:someopt, true) #while parsing ini file
-        #
-        # and merge with default values(which will override the old
-        # with new ones)
-        # @rndrOpt.merge! rndrIni
-        # @markdownExt.merge! extIni
-      else
-        @cssFile = File.expand_path(DefaultCssFile, @exePath)
+      begin
+        readConfiguration(iniFile)
+      rescue => exc
+        # 対象のiniファイルが無ければデフォルト値で生成する
+        log.debug exc
+        log.info "creating default ini file as #{iniFile}"
+        create_default_inifile(:filename=>iniFile)
+        retry
       end
-      log.debug "@cssFile :#{@cssFile}"
-    end # initialize
+    end
+
     attr_reader :log
     attr_accessor :cssFile, :exePath, :rndrOpt, :markdownExt
 
+    # @param [String] iniFile config file path to read
+    # 設定ファイルを読みだして設定変数に値をセットします
+    def readConfiguration(iniFile)
+      # 対象のiniファイルが無ければデフォルト値で生成する
+      unless File.exist?(iniFile)
+        raise "No such File: #{iniFile}"
+      end
+
+      ini = IniFile.load(iniFile)
+      iniPath = File.dirname(iniFile)
+
+      ###############################################
+      # Parse the global section
+      @cssFile = ini["global"]["cssFile"]
+      if @cssFile.nil?
+        @cssFile = DefaultCssFile
+      end
+      if File.dirname(@cssFile)[0] == "."
+        # css file will be set relative to config file
+        @cssFile = File.expand_path(@cssFile, iniPath)
+      end
+
+      ###############################################
+      # Parse the renderOpt and markdownExt section
+      @rndrOpt = parse_section(ini, "renderOpt", :to_bool=>true)
+      @markdownExt = parse_section(ini, "markdownExt", :to_bool=>true)
+
+      log.debug "Config initialized:"
+      log.debug "  @cssFile = #{@cssFile}"
+      log.debug "  @rndrOpt = #{@rndrOpt}"
+      log.debug "  @markdownExt = #{@markdownExt}"
+    end
+
+    # @param [Hash] opts
+    # @option opts [String] :filename('config.ini') Configuration file 
+    #   name to create
+    # :filenameで指定したファイル名のiniファイルを生成し、デフォルト値
+    # を書き込みます。
+    def create_default_inifile(opts={})
+      opts={
+        :filename=>"config.ini"
+      }.merge(opts)
+      ini = IniFile.new(opts[:filename])
+      global = {
+        :cssFile=>"compHTML.css"
+      }
+      renderOpt = {:hard_wrap => "false",
+                  :xhtml => "true",
+                  :with_toc_data => "true"}
+      markdownExt = {:autolink => "true", 
+                      :tables => "true",
+                      :fenced_code_blocks => "true",
+                      :autolink => "true",
+                      :superscript => "true",
+                      :strikethrough => "true",
+                      :no_intra_emphasis => "true"}
+      ini["global"] = global
+      ini["renderOpt"] = renderOpt
+      ini["markdownExt"] = markdownExt
+      ini.save
+    end
+    private :create_default_inifile
+
+    # @param [IniFile] ini IniFile to parse from
+    # @param [String] sect The Section of ini file to parse
+    # @param [Hash] opts
+    # @option opts [Boolean] to_bool(false) turns all value to Boolean 
+    #   when true.  This option will override other options.
+    # @option opts [Boolean] to_symbol(false) turns all value to symbol
+    #   when true.
+    # Parse IniFile object for section :sect
+    def parse_section(ini, sect="global", opts={})
+      opts={
+        :to_bool=>false,
+        :to_symbol=>false
+      }.merge(opts)
+      settings = {}
+      ini[sect].each_pair {|k, v|
+        if opts[:to_bool]
+          value = v.to_b
+        elsif opts[:to_symbol]
+          value = v.intern
+        else
+          value = v
+        end
+        settings[k.intern] = value
+      }
+      return settings
+    end
+    private :parse_section
+
+    # @return [String] Returns the absolute path to the executable
+    # obtain the exe path.  Only works BEFORE CURRENT DIRECTORY CHANGE
+    def self.getExePath()
+      unless @@exePath.nil?
+        return @@exePath
+      end
+
+      if CompHTML::Config.is_OcraCompiled() # needs to obtain exePath from env
+        @@exePath = File.dirname(ENV["OCRA_EXECUTABLE"])
+        return @@exePath
+      else
+        @@exePath = File.dirname(File.expand_path($0))
+        return @@exePath
+      end
+    end
+
+    # @return [True] returns true if it is an OCRA compiled version
+    # @return [False] returns false if it is not compiled by OCRA
     # Checks if executive is compiled using ocra
-    def is_OcraCompiled()
+    def self.is_OcraCompiled()
       if ENV["OCRA_EXECUTABLE"].nil?
         return false
       else
         return true
       end
     end
-    private :is_OcraCompiled
   end # Config Class
 
   # Markdown Engine used to compile markdown text inputs
   class Engine
+    # @param [Hash] opts
+    # @option opts [Config] :config(nil) config object used to configure 
+    #   the Engine.  Creates a new Default Config object if nil.
+    # @option opts [Logger] :log(nil) Logger used for logging. creates own
+    #   logger with output to STDERR if nil.
     # Initialization for the Markdown Engine
     # :config used to configure the Engine
     def initialize(opts={})
@@ -142,21 +241,29 @@ module CompHTML
 
       self.setCSS_to(config.cssFile)
     end
+
     attr_reader :log
 
+    # @param css_filename("") Path to the CSS File to read
     # reset the css to specified css
     def setCSS_to(css_filename = "")
-      if css_filename.length > 0 and File.exists?(css_filename)
+      log.debug "setCSS_to: #{css_filename}"
+      if css_filename.length > 0 and File.exist?(css_filename)
         @css = createCSSinsert(css_filename)
       else
         @css = ""
       end
     end
 
+    # @param [Hash] opts
+    # @option opts [String] :title("Markdown HTML") Title of the HEAD element
+    # @option opts [String] :css("") CSS insert string inside HEAD
+    # @return [String] returns the HTML header portion
     # Create HTML header with html:title attribute set to :title
     def createHTMLhead(opts={})
       opts = {
-        :title=>"Markdown HTML"
+        :title=>"Markdown HTML",
+        :css=>""
       }.merge(opts)
       title = opts[:title]
       htmlHeader = <<-EOS
@@ -166,6 +273,7 @@ module CompHTML
           <head>
             <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
             <title>#{title}</title>
+            #{opts[:css]}
           </head>
          
           <body>
@@ -175,6 +283,7 @@ module CompHTML
     end
     private :createHTMLhead
 
+    # @return [String] returns the HTML footer portion
     # Create HTML footer
     def createHTMLfoot()
       footer = <<-EOS
@@ -185,6 +294,8 @@ module CompHTML
     end
     private :createHTMLfoot
 
+    # @param [String] inFile input CSS File path
+    # @return [String] returns the CSS insertion string
     # Create CSS insert
     # Assumes that inFile is available.
     def createCSSinsert(inFile)
@@ -204,11 +315,11 @@ module CompHTML
     end
     private :createCSSinsert
 
+    # @param [Hash] opts
+    # @option opts [String] :outFile("") output filename in full or relative path
+    # @option opts [String] :title("Markdown HTML") HTML title
+    # @option opts [String] :markdownTXT("") markdown text to parse for body
     # Generates the HTML output with the specified inputs
-    # :outFile : Output HTML file name
-    # :title : Title used within the HTML title attribute
-    # :markdownTXT : string of markdown formatted text to parse and create 
-    #   the body of the HTML file
     def generateHtml(opts={})
       opts = {
         :outFile=>"", 
@@ -238,8 +349,7 @@ module CompHTML
       foHtml = open(outFile,'a')
 
       # Finally generate the html output
-      foHtml.puts createHTMLhead(:title=>title)
-      foHtml.puts @css
+      foHtml.puts createHTMLhead(:title=>title, :css=>@css)
       foHtml.puts @markdown.render(markdownTXT)
       foHtml.puts createHTMLfoot()
 
@@ -249,6 +359,10 @@ module CompHTML
 
   # File Reader to prepare for the CompHTML::Engine use
   class Reader
+    # @param [Hash] opts
+    # @option opts [String] :inFile("") Path to the file to read.
+    # @option opts [Logger] :log(nil) Logger used for logging. creates own
+    #   logger with output to STDERR if nil.
     # Initialize Reader class with the inputFile.
     # Reads the :inFile and populate the instance variables for later use
     def initialize(opts={})
@@ -266,7 +380,7 @@ module CompHTML
       @fileBody = ""
       @outputName = ""
 
-      if inputFile.length > 0 and File.exists?(inputFile)
+      if inputFile.length > 0 and File.exist?(inputFile)
         @outputName = inputFile + "\.html"
 
         f = open(inputFile)
@@ -282,6 +396,7 @@ module CompHTML
         raise "ERROR: Input file '#{Kconv.tosjis(inputFile)}' does not exist!"
       end
     end
+
     attr_reader :log
     attr_accessor :fileTitle, :fileBody, :outputName
   end  # Reader Class
