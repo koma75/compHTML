@@ -25,7 +25,7 @@ end
 task :doc => [:htmdoc, :yardoc]
 
 task :yardoc => SRCS do |t|
-  sh "#{DOC} --private --protected #{t.prerequisites.join(' ')}"
+  sh "#{DOC} --private --protected #{t.prerequisites.join(' ')} - #{DOCHTM}"
 end
 
 task :htmdoc => DOCHTM

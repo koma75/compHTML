@@ -53,8 +53,8 @@ module CompHTML
     end
 
     # @param [Hash] opts
-    # @option opts [String] :iniFile('config.ini') Configuration file
-    # @option opts [Logger] :log(nil) Logger used for logging. creates own
+    # @option opts [String] :iniFile ('config.ini') Configuration file
+    # @option opts [Logger] :log (nil) Logger used for logging. creates own
     #   logger with output to STDERR if nil.
     # Initialization of Config class
     # Reads the specified :iniFile and populate the configuration 
@@ -132,7 +132,7 @@ module CompHTML
     end
 
     # @param [Hash] opts
-    # @option opts [String] :filename('config.ini') Configuration file 
+    # @option opts [String] :filename ('config.ini') Configuration file 
     #   name to create
     # :filenameで指定したファイル名のiniファイルを生成し、デフォルト値
     # を書き込みます。
@@ -162,11 +162,11 @@ module CompHTML
     private :create_default_inifile
 
     # @param [IniFile] ini IniFile to parse from
-    # @param [String] sect The Section of ini file to parse
+    # @param [String] sect ("global") The Section of ini file to parse
     # @param [Hash] opts
-    # @option opts [Boolean] to_bool(false) turns all value to Boolean 
+    # @option opts [Boolean] to_bool (false) turns all value to Boolean 
     #   when true.  This option will override other options.
-    # @option opts [Boolean] to_symbol(false) turns all value to symbol
+    # @option opts [Boolean] to_symbol (false) turns all value to symbol
     #   when true.
     # Parse IniFile object for section :sect
     def parse_section(ini, sect="global", opts={})
@@ -220,9 +220,9 @@ module CompHTML
   # Markdown Engine used to compile markdown text inputs
   class Engine
     # @param [Hash] opts
-    # @option opts [Config] :config(nil) config object used to configure 
+    # @option opts [Config] :config (nil) config object used to configure 
     #   the Engine.  Creates a new Default Config object if nil.
-    # @option opts [Logger] :log(nil) Logger used for logging. creates own
+    # @option opts [Logger] :log (nil) Logger used for logging. creates own
     #   logger with output to STDERR if nil.
     # Initialization for the Markdown Engine
     # :config used to configure the Engine
@@ -244,7 +244,7 @@ module CompHTML
 
     attr_reader :log
 
-    # @param css_filename("") Path to the CSS File to read
+    # @param css_filename Path to the CSS File to read
     # reset the css to specified css
     def setCSS_to(css_filename = "")
       log.debug "setCSS_to: #{css_filename}"
@@ -256,8 +256,8 @@ module CompHTML
     end
 
     # @param [Hash] opts
-    # @option opts [String] :title("Markdown HTML") Title of the HEAD element
-    # @option opts [String] :css("") CSS insert string inside HEAD
+    # @option opts [String] :title ("Markdown HTML") Title of the HEAD element
+    # @option opts [String] :css ("") CSS insert string inside HEAD
     # @return [String] returns the HTML header portion
     # Create HTML header with html:title attribute set to :title
     def createHTMLhead(opts={})
@@ -316,9 +316,9 @@ module CompHTML
     private :createCSSinsert
 
     # @param [Hash] opts
-    # @option opts [String] :outFile("") output filename in full or relative path
-    # @option opts [String] :title("Markdown HTML") HTML title
-    # @option opts [String] :markdownTXT("") markdown text to parse for body
+    # @option opts [String] :outFile ("") output filename in full or relative path
+    # @option opts [String] :title ("Markdown HTML") HTML title
+    # @option opts [String] :markdownTXT ("") markdown text to parse for body
     # Generates the HTML output with the specified inputs
     def generateHtml(opts={})
       opts = {
@@ -360,8 +360,8 @@ module CompHTML
   # File Reader to prepare for the CompHTML::Engine use
   class Reader
     # @param [Hash] opts
-    # @option opts [String] :inFile("") Path to the file to read.
-    # @option opts [Logger] :log(nil) Logger used for logging. creates own
+    # @option opts [String] :inFile ("") Path to the file to read.
+    # @option opts [Logger] :log (nil) Logger used for logging. creates own
     #   logger with output to STDERR if nil.
     # Initialize Reader class with the inputFile.
     # Reads the :inFile and populate the instance variables for later use
