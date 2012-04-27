@@ -17,9 +17,40 @@ Change History
 
 Configuration - 設定
 ------------------------------------------------------------------------
-There is currently no configuration required for this program.
+Configuration is done with config.ini file located in the same folder 
+as the main executed program (compHTML.exe or compHTML.rbw).  If no 
+config.ini file is found, the program will generate a default config.ini
+file.
+
+Following sections are used: 
+
+* global
+    * Currently only support *cssFile* to set the css to import.  
+      CSS File path is relative to the config file.
+* renderOpt
+    * This section is used to specify the parameters to pass to 
+      [Redcarpet][] renderer.
+* markdownExt
+    * This section is used to specify the parameters to pass to 
+      [Redcarpet][] Markdown class for extensions.
+
 - - -
-現在このプログラムには設定は有りません
+設定はすべて config.ini ファイルにて行います。 config.ini ファイルは
+現在実行中のプログラムと同一フォルダの物が利用されます。また、ファイルが
+存在しない場合は、デフォルト設定値のファイルが生成されます。
+
+以下のセクションに現在対応しています：
+
+* global
+    * 現在このセクションではインポートするCSSファイルの設定のみ
+      対応しています。設定値は *cssFile* で、CSSファイルへのパスは
+      config.ini ファイルとの相対パスで指定されます。
+* renderOpt
+    * このセクションは [Redcarpet][] のレンダラーに渡すパラメータ
+      を記述します。
+* markdownExt
+    * このセクションは [Redcarpet][] のMarkdownクラスに渡すExtension
+      を記述します。
 
 Installation - インストール
 ------------------------------------------------------------------------
@@ -154,6 +185,8 @@ This work uses the following libraries and external works
     * Used for configuration file parsing and saving
 * [boolean][]
     * Used for configuration file parsing
+* [YARD][]
+    * Used to create the documentation
 * [Ruby][] 1.9
 
 [Redcarpet]:    https://github.com/tanoku/redcarpet         "Redcarpet"
@@ -162,6 +195,7 @@ This work uses the following libraries and external works
 [Rake]:         http://rake.rubyforge.org/ "Rake - Ruby Make"
 [IniFile]:      http://rubygems.org/gems/inifile "native Ruby package for reading and writing INI files"
 [boolean]:      http://rubygems.org/gems/boolean "Additional Boolean-related core extensions"
+[YARD]:         http://yardoc.org "Yay! A Ruby Documentation Tool"
 [Ruby]:         http://www.ruby-lang.org/ "Ruby - A Programmer's Best Friend"
 
 LICENSE - ライセンス
