@@ -1,5 +1,6 @@
 
-README.markdown.html
+README.html
+LICENSES.html
 
 .DS_Store
 
@@ -7,3 +8,7 @@ README.markdown.html
 *.log
 
 tags
+
+.yardoc
+
+doc
