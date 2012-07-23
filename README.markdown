@@ -4,13 +4,14 @@ compHTML - a Markdown file to HTML compiler
 |||
 |:--------- | :---------------------------- |
 |Author     | Koma <okunoya@path-works.net> |
-|Version    | 1.1.0                         |
+|Version    | 1.2.0                         |
 |License    | BSD 2-clause license          |
 
 Change History
 ------------------------------------------------------------------------
 | Version | Date | Change History |
 | ------: | ---: | :------------- |
+| 1.2.0   | 2012.07.23 | Added GUI File dialog |
 | 1.1     | 2012.04.27 | Added Configuration Feature |
 | 1.0.1   | 2012.04.22 | Fixed path bug |
 | 1.0 | 2012.04.18 | First Release |
@@ -79,6 +80,7 @@ You will be required to have the following installed
     * [Rake][]
     * [IniFile][]
     * [boolean][]
+    * [wxRuby][]
 
 Do the Following to compile:
 
@@ -104,6 +106,7 @@ this should produce compHTML.exe using the [OCRA][]
     * [Rake][]
     * [IniFile][]
     * [boolean][]
+    * [wxRuby][]
 
 以下を実行してコンパイルしてください:
 
@@ -115,6 +118,24 @@ this should produce compHTML.exe using the [OCRA][]
 
 Usage - 利用方法
 ------------------------------------------------------------------------
+
+### Running in GUI mode - GUIモードでの実行
+
+compHTML now supports GUI mode.
+
+1. Launch the application by double clicking the exe file
+2. In the Open Files Dialog, select the markdown files to convert to HTML.
+
+compHTML will convert the selected files in the same folder.
+
+- - -
+
+新たにGUIモードが追加されました。
+
+1. 実行ファイルをダブルクリックして実行してください
+2. ファイルダイアログボックスで変換するファイルを指定してOPENを押して下さい。
+
+以上で指定されたファイルが変換されます。
 
 ### Windows exe file - Windows用EXE
 Using compHTML.exe is as simple as drag-and-drop of markdown files to the executable.  
@@ -187,6 +208,8 @@ This work uses the following libraries and external works
     * Used for configuration file parsing
 * [YARD][]
     * Used to create the documentation
+* [wxRuby][]
+    * Used for the File Open Dialog
 * [Ruby][] 1.9
 
 [Redcarpet]:    https://github.com/tanoku/redcarpet         "Redcarpet"
@@ -197,6 +220,7 @@ This work uses the following libraries and external works
 [boolean]:      http://rubygems.org/gems/boolean "Additional Boolean-related core extensions"
 [YARD]:         http://yardoc.org "Yay! A Ruby Documentation Tool"
 [Ruby]:         http://www.ruby-lang.org/ "Ruby - A Programmer's Best Friend"
+[wxRuby]:       http://wxruby.rubyforge.org/ "open source GUI toolkit for the [Ruby] programming language"
 
 LICENSE - ライセンス
 ------------------------------------------------------------------------
