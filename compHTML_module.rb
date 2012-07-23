@@ -381,7 +381,7 @@ module CompHTML
       @outputName = ""
 
       if inputFile.length > 0 and File.exist?(inputFile)
-        @outputName = inputFile + "\.html"
+        @outputName = inputFile.sub(/\.[a-zA-Z0-9_\-]+$/, "\.html")
 
         f = open(inputFile)
         @fileBody = Kconv.toutf8(f.read)
