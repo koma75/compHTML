@@ -89,8 +89,6 @@ Do the Following to compile:
 2. do '`cd /path/to/your/compHTML`' in your command line prompt
 3. run '`rake`'
 
-or just run the dorake.bat file...
-
 this should produce compHTML.exe using the [OCRA][]
 - - -
 このプログラムをコンパイルして利用するためには以下の物が必要になります
