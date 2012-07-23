@@ -35,8 +35,37 @@
 
 require 'logger'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'compHTML_module.rb')
+require 'wx'
 
+# Output log filename
 LOGFILE_NAME = 'compHTML.log'
+
+#
+# GUI Dialogue class to allow File OPEN dialogs
+#
+class MyGUI < Wx::App
+  @files
+  attr_reader :files
+
+  private
+
+  #
+  # Open a File Open Dialog to select files to convert.
+  #
+  def on_init
+    fd = Wx::FileDialog.new(
+                nil,          # parent
+                "Open File",  # message
+                "",           # defaultDir
+                "",           # defaultFile
+                "*.txt;*.markdown",           # wildcard
+                (Wx::FD_OPEN | Wx::FD_MULTIPLE))
+    if fd.show_modal == Wx::ID_OK
+      @files = fd.get_paths
+    end
+    return false
+  end
+end
 
 if $0 == __FILE__
   # Create the logging object
@@ -62,6 +91,13 @@ if $0 == __FILE__
     #   override instead of using command line options.
     #   This way we can just drag-n-drop all the files *with*
     #   the CSS file.
+  else
+    #
+    # If no arguments are given, launch in GUI mode.
+    #
+    myGUI = MyGUI.new
+    myGUI.main_loop
+    files = myGUI.files
   end
 
   if files.size == 0
