@@ -387,11 +387,8 @@ module CompHTML
         @fileBody = Kconv.toutf8(f.read)
         f.close
 
-        @fileBody.each_line{|line|
-          # TODO: are there any better way for this...?
-          @fileTitle = line.chomp
-          break
-        }
+        @fileBody =~ /(.*)[\n\r]/
+        @fileTitle = $1
       else
         raise "ERROR: Input file '#{Kconv.tosjis(inputFile)}' does not exist!"
       end
