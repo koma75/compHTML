@@ -4,13 +4,14 @@ compHTML - a Markdown file to HTML compiler
 |||
 |:--------- | :---------------------------- |
 |Author     | Koma <okunoya@path-works.net> |
-|Version    | 1.2.1                         |
+|Version    | 1.2.2                         |
 |License    | BSD 2-clause license          |
 
 Change History
 ------------------------------------------------------------------------
 | Version | Date | Change History |
 | ------: | ---: | :------------- |
+| 1.2.2   | 2012.10.02 | Added \*.md as valid input file extension |
 | 1.2.1   | 2012.07.24 | Fixed output filename extension |
 | 1.2     | 2012.07.23 | Added GUI File dialog |
 | 1.1     | 2012.04.27 | Added Configuration Feature |
