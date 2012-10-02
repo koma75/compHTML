@@ -58,7 +58,7 @@ class MyGUI < Wx::App
                 "Open File",  # message
                 "",           # defaultDir
                 "",           # defaultFile
-                "*.txt;*.markdown",           # wildcard
+                "*.txt;*.markdown;*.md",           # wildcard
                 (Wx::FD_OPEN | Wx::FD_MULTIPLE))
     if fd.show_modal == Wx::ID_OK
       @files = fd.get_paths
