@@ -12,3 +12,5 @@ tags
 .yardoc
 
 doc
+Gemfile.lock
+compHTML.exe

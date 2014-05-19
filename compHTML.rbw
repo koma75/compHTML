@@ -34,8 +34,10 @@
 #  * https://github.com/clownfart/Markdown-CSS
 
 require 'logger'
+require 'bundler/setup'
 require File.join(File.expand_path(File.dirname(__FILE__)), 'compHTML_module.rb')
 require 'wx'
+require 'filewatcher'
 
 # Output log filename
 LOGFILE_NAME = 'compHTML.log'
@@ -67,6 +69,60 @@ class MyGUI < Wx::App
   end
 end
 
+#
+# File watching dialog class
+#
+class MyWatcher < Wx::App
+  # list of files to watch
+  @files = []
+  # logger object
+  @log
+  # Redcarpet engine used to update changed files
+  @myEngine
+  attr_accessor :files, :log, :myEngine
+
+  #
+  # Set the files to watch
+  #
+  def set_files(flist)
+    @files = flist
+    if @files.nil?
+      @files = []
+    end
+  end
+
+  private
+
+  #
+  # Start a thread to watch for changes in input file and run redcarpet
+  # on every change.  Keep watching until the dialog is closed.
+  #
+  def on_init
+    Wx::Timer.every(55) { Thread.pass }
+    if @files.size > 0
+      message = "watching files:\n"
+      @files.each {|x|
+        message << x
+        message << "\n"
+      }
+      t = Thread.new(@files) do |flist|
+        FileWatcher.new(flist).watch do |filename|
+          myReader = CompHTML::Reader.new(:log=>@log, :inFile=>filename)
+          @myEngine.generateHtml(:outFile=>myReader.outputName,
+                                :title=>myReader.fileTitle,
+                                :markdownTXT=>myReader.fileBody)
+        end
+      end
+      Wx::message_box(message)
+      Thread::kill(t)
+    end
+    return false
+  end
+end
+
+if defined?(Ocra)
+  exit 0
+end
 if $0 == __FILE__
   # Create the logging object
   exePath = CompHTML::Config.getExePath() # needs to obtain exePath from env
@@ -78,6 +134,7 @@ if $0 == __FILE__
   myConfig = CompHTML::Config.new(:log=>log)
 
   # Parse input arguments.
+  myGUI = nil
   files = []
   if (ARGV.length > 0)
     ARGV.each do |x|
@@ -98,6 +155,9 @@ if $0 == __FILE__
     myGUI = MyGUI.new
     myGUI.main_loop
     files = myGUI.files
+    if files.nil?
+      files = []
+    end
   end
 
   if files.size == 0
@@ -119,6 +179,17 @@ if $0 == __FILE__
     rescue => ex
       log.error ex
     end
+  end
+
+  #
+  # If the program was run on GUI mode, start a watch on the files
+  #
+  if not myGUI.nil?
+    myWatcher = MyWatcher.new
+    myWatcher.set_files(files)
+    myWatcher.log = log
+    myWatcher.myEngine = myEngine
+    myWatcher.main_loop
   end
 
 end

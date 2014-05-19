@@ -35,6 +35,7 @@
 
 require 'logger'
 require 'kconv'
+require 'bundler/setup'
 # GEMS
 require 'redcarpet'
 require 'boolean'

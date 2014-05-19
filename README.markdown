@@ -4,13 +4,14 @@ compHTML - a Markdown file to HTML compiler
 |||
 |:--------- | :---------------------------- |
 |Author     | Koma <okunoya@path-works.net> |
-|Version    | 1.2.2                         |
+|Version    | 1.3                           |
 |License    | BSD 2-clause license          |
 
 Change History
 ------------------------------------------------------------------------
 | Version | Date | Change History |
 | ------: | ---: | :------------- |
+| 1.3     | 2013.06.28 | Added experimental file watch feature |
 | 1.2.2   | 2012.10.02 | Added \*.md as valid input file extension |
 | 1.2.1   | 2012.07.24 | Fixed output filename extension |
 | 1.2     | 2012.07.23 | Added GUI File dialog |
@@ -208,6 +209,8 @@ This work uses the following libraries and external works
     * Used for configuration file parsing
 * [YARD][]
     * Used to create the documentation
+* [filewatcher][]
+    * Used to detect target file changes
 * [wxRuby][]
     * Used for the File Open Dialog
 * [Ruby][] 1.9
@@ -219,6 +222,7 @@ This work uses the following libraries and external works
 [IniFile]:      http://rubygems.org/gems/inifile "native Ruby package for reading and writing INI files"
 [boolean]:      http://rubygems.org/gems/boolean "Additional Boolean-related core extensions"
 [YARD]:         http://yardoc.org "Yay! A Ruby Documentation Tool"
+[filewatcher]:  https://github.com/thomasfl/filewatcher "simple file change detection(polling) library"
 [Ruby]:         http://www.ruby-lang.org/ "Ruby - A Programmer's Best Friend"
 [wxRuby]:       http://wxruby.rubyforge.org/ "open source GUI toolkit for the [Ruby] programming language"
 

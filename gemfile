@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+gem 'redcarpet','~>2'
+gem 'boolean','~>1.0'
+gem 'inifile','~>1.1'
+gem 'wxruby-ruby19','~>2'
+gem 'filewatcher','~>0.1.8'
